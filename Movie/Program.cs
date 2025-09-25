@@ -108,17 +108,20 @@ class Program
         if (reader.Read() is false)
         {
             Console.WriteLine("No such movie exists");
-            
-        }
 
-        while (reader.Read())
+        }
+        else
         {
-            Console.WriteLine($"Movie {reader["id"]}: {reader["title"]} ({reader["yearOfRelease"]})");
-            Console.WriteLine($""""
+
+            while (reader.Read())
+            {
+                Console.WriteLine($"Movie {reader["id"]}: {reader["title"]} ({reader["yearOfRelease"]})");
+                Console.WriteLine($""""
                 Description:
                 {reader["description"]}
 
                 """");
+            }
         }
     }
 
