@@ -12,32 +12,137 @@ class Program
         "Server=localhost,1433;Database=MovieDB;User Id=SA;Password=P455Word;TrustServerCertificate=True;";
     public static void Main(string[] args)
     {
-        Console.WriteLine("== Movie Database ==");
+        // Menu
+        while (true)
+        {
+            Console.WriteLine("""
+                ==============================
+                ======= MOVIE DATABASE =======
+                ==============================
+
+                ==============================
+                = 0. Exit                    =
+                = 1. Create Movie            =
+                = 2. Read Movie              =
+                = 3. Update Movie            =
+                = 4. Delete Movie            = 
+                ==============================
+                """
+                );
+            // Prompting menu selection
+            Console.WriteLine("Enter Option: ");
+
+            // Retrieving menu option
+            string response = Console.ReadLine();
+
+            int tempmovieId;
+
+
+            if (response == "1")
+            {
+                Console.WriteLine("Enter Movie Title: ");
+                string movieTitle = Console.ReadLine();
+
+                Console.WriteLine("Enter Year: ");
+                int year = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("Enter Description: ");
+                string description = Console.ReadLine();
+
+                tempmovieId = InsertMovie(movieTitle, year, description);
+
+            } else if (response == "2"){
+
+                Console.WriteLine("Enter movie you would like to read information about: ");
+                string movieTitle = Console.ReadLine();
+
+                Read(movieTitle);
+
+            } else if (response == "0")
+            {
+                Console.WriteLine("Exiting program...");
+                break;
+            }
+
+
+
+        }
+
+        //Console.WriteLine("== Movie Database ==");
 
         // Create
-        int movieId = InsertMovie(
-            "Inception",
-            2010,
-            "a mind-bending heist that takes place in people's dreams.");
+        //int movieId = InsertMovie(
+            //"Inception",
+           // 2010,
+            //"a mind-bending heist that takes place in people's dreams.");
 
-        Console.WriteLine($"New movie inserted at ID number {movieId}");
+        //Console.WriteLine($"New movie inserted at ID number {movieId}");
 
         // Read
-        GetMovie(movieId);
+        //GetMovie(movieId);
 
         // Update
-        UpdatingMovieDescription(movieId, "A science-fiction heist film by Christoper Nolan.");
-        GetMovie(movieId);
+        //UpdatingMovieDescription(movieId, "A science-fiction heist film by Christoper Nolan.");
+        //GetMovie(movieId);
 
         // Delete
-        DeleteMovie(movieId);
-        GetMovie(movieId);
+        //DeleteMovie(movieId);
+        //GetMovie(movieId);
 
-        GetMovies();
+        //GetMovies();
 
 
     }
 
+    private static void Read(string movieTitle)
+    {
+        using var con = new SqlConnection(ConnectionString);
+        con.Open();
+
+        string sql = $"SELECT * FROM Movies WHERE Title = '{movieTitle}';";
+
+        using var cmd = new SqlCommand(sql, con);
+
+        using var reader = cmd.ExecuteReader();
+
+        if (reader.Read() is false)
+        {
+            Console.WriteLine("No such movie exists");
+            
+        }
+
+        while (reader.Read())
+        {
+            Console.WriteLine($"Movie {reader["id"]}: {reader["title"]} ({reader["yearOfRelease"]})");
+            Console.WriteLine($""""
+                Description:
+                {reader["description"]}
+
+                """");
+        }
+    }
+
+    private static void ReadAll(string movieTitle)
+    {
+        using var con = new SqlConnection(ConnectionString);
+        con.Open();
+
+        string sql = "SELECT * FROM Movies;";
+
+        using var cmd = new SqlCommand(sql, con);
+
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            Console.WriteLine($"Movie {reader["id"]}: {reader["title"]} ({reader["yearOfRelease"]})");
+            Console.WriteLine($""""
+                Description:
+                {reader["description"]}
+
+                """");
+        }
+    }
     private static void GetMovies()
     {
         using var con = new SqlConnection(ConnectionString);
@@ -147,6 +252,7 @@ class Program
         cmd.Parameters.AddWithValue("@desc", movieDescription);
 
         return Convert.ToInt32(cmd.ExecuteScalar());
+        Console.WriteLine("End of method");
 
     }
 
