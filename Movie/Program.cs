@@ -25,7 +25,8 @@ class Program
                 = 1. Create Movie            =
                 = 2. Read Movie              =
                 = 3. Update Movie            =
-                = 4. Delete Movie            = 
+                = 4. Delete Movie            =
+                = 5. Read All Movies         = 
                 ==============================
                 """
                 );
@@ -68,10 +69,10 @@ class Program
 
                 UpdatingMovie(movieTitle, description);
 
-            } else if (response == "4") {
+            } else if (response == "5") {
 
-                Console.WriteLine("Exiting program...");
-                break;
+                Console.WriteLine("Reading all movies...\n");
+                ReadAll();
 
             } else if (response == "0") {
 
@@ -155,7 +156,7 @@ class Program
         }
     }
 
-    private static void ReadAll(string movieTitle)
+    private static void ReadAll()
     {
         using var con = new SqlConnection(ConnectionString);
         con.Open();
