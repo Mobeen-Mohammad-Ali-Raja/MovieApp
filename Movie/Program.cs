@@ -38,8 +38,8 @@ class Program
             int tempmovieId;
 
 
-            if (response == "1")
-            {
+            if (response == "1") {
+
                 Console.WriteLine("Enter Movie Title: ");
                 string movieTitle = Console.ReadLine();
 
@@ -58,10 +58,26 @@ class Program
 
                 Read(movieTitle);
 
-            } else if (response == "0")
-            {
+            } else if (response == "3") {
+
+                Console.WriteLine("Enter movie you would like to update description for");
+                string movieTitle = Console.ReadLine();
+
+                Console.WriteLine("Enter new description");
+                string description = Console.ReadLine();
+
+                UpdatingMovie(movieTitle, description);
+
+            } else if (response == "4") {
+
                 Console.WriteLine("Exiting program...");
                 break;
+
+            } else if (response == "0") {
+
+                Console.WriteLine("Exiting program...");
+                break;
+
             }
 
 
@@ -92,6 +108,20 @@ class Program
         //GetMovies();
 
 
+    }
+    private static void UpdatingMovie(string movieTitle, string newDescription)
+    {
+        using var con = new SqlConnection(ConnectionString);
+        con.Open();
+
+        string sql = @"UPDATE Movies SET Description = @desc WHERE Title = @title;";
+        using var cmd = new SqlCommand(sql, con);
+
+        cmd.Parameters.AddWithValue("@desc", newDescription);
+        cmd.Parameters.AddWithValue("@title", movieTitle);
+
+        int rows = cmd.ExecuteNonQuery();
+        Console.WriteLine(rows > 0 ? "Movie updated.\n" : "Movie not found.\n"); // ternary statement being used
     }
 
     private static void Read(string movieTitle)
