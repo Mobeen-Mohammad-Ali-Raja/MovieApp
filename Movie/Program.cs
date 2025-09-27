@@ -69,7 +69,15 @@ class Program
 
                 UpdatingMovie(movieTitle, description);
 
-            } else if (response == "5") {
+            } else if (response == "4")
+            {
+
+                Console.WriteLine("Enter movie you would like to delete from database");
+                string movieTitle = Console.ReadLine();
+                DeleteMovie(movieTitle);
+
+            }
+            else if (response == "5") {
 
                 Console.WriteLine("Reading all movies...\n");
                 ReadAll();
@@ -108,6 +116,31 @@ class Program
 
         //GetMovies();
 
+
+    }
+
+
+    private static void DeleteMovie(string movieTitle)
+    {
+        Console.WriteLine("Are you sure? Y/N: ");
+        string? reply = Console.ReadLine().ToUpper();
+        if (reply == "Y")
+        {
+            using var con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            string sql = @"DELETE FROM Movies WHERE Title = @title;";
+            using var cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@title", movieTitle);
+
+            int rows = cmd.ExecuteNonQuery();
+            Console.WriteLine(rows > 0 ? $"Movie {movieTitle} deleted\n" : "Movie not found\n");
+        }
+        else
+        {
+            Console.WriteLine("No action taken... returning to menu...\n");
+        }
 
     }
     private static void UpdatingMovie(string movieTitle, string newDescription)
@@ -199,29 +232,6 @@ class Program
         }
     }
 
-    private static void DeleteMovie(int movieId)
-    {
-        Console.WriteLine("Are you sure? Y?N: ");
-        string? reply = Console.ReadLine().ToUpper();
-        if (reply == "Y")
-        {
-            using var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            string sql = @"DELETE FROM Movies WHERE id = @id;";
-            using var cmd = new SqlCommand(sql, con);
-
-            cmd.Parameters.AddWithValue("@id", movieId);
-
-            int rows = cmd.ExecuteNonQuery();
-            Console.WriteLine(rows > 0 ? $"Movie deleted at id {movieId}\n" : "Movie not found\n");
-        }
-        else
-        {
-            Console.WriteLine("No action taken.");
-        }
-
-    }
 
     private static void UpdatingMovieDescription(int movieId, string newDescription)
     {
